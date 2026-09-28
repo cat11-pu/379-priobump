@@ -1,0 +1,18 @@
+{
+  "budget": 2,
+  "bad_task_code": "E_BAD_TASK",
+  "bad_prio_code": "E_BAD_PRIO",
+  "held_code": "E_HELD",
+  "not_held_code": "E_NOT_HELD",
+  "dup_wait_code": "E_DUP_WAIT",
+  "not_owner_code": "E_NOT_OWNER",
+  "event_error_code": "E_BAD_EVENT",
+  "state": { "holder": [], "waiting": [], "bumps": [], "ledger": [], "applied": [] },
+  "events": [
+    { "id": 1, "kind": "lock", "task": "a", "prio": 2 },
+    { "id": 2, "kind": "want", "task": "b", "prio": 5 },
+    { "id": 3, "kind": "unlock", "task": "a" },
+    { "id": 4, "kind": "lock", "task": "b", "prio": 1 },
+    { "id": 5, "kind": "want", "task": "c", "prio": 3 }
+  ]
+}

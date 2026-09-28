@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>priobump · 仪表盘</title>
+<style>
+:root{--accent:#b3261e;--soft:#fbe0de}
+body{margin:0;background:#f4f6fb;color:#1b2430;font-family:system-ui,sans-serif}
+header{padding:16px 22px 8px}
+h1{font-size:17px;margin:0 0 4px}
+.hint{color:#5c6a7c;font-size:13px;margin:0}
+.grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:14px;padding:12px 22px 8px;align-items:start}
+#controls{background:#fff;border:1px solid #e2e7f0;border-radius:12px;padding:12px;display:flex;flex-wrap:wrap;gap:8px}
+#controls button{font:inherit;font-size:13px;padding:7px 12px;border-radius:8px;border:1px solid #d7dde8;background:#fff;cursor:pointer}
+#controls button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+#controls input{font:inherit;padding:6px 9px;border-radius:8px;border:1px solid #d7dde8;width:80px}
+#controls label{font-size:12px;color:#5c6a7c;width:100%}
+#stage{background:#fff;border:1px solid #e2e7f0;border-radius:12px;padding:14px;min-height:280px}
+#stage .row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f0f3f8}
+#stage .chip{border-radius:6px;padding:2px 8px;font-size:12px;background:#f1f4fa;color:#41506a}
+#stage .chip.ok{background:var(--soft);color:#16324f}
+#stage .chip.bad{background:#fde7e5;color:#8a2018}
+#stage .bar{flex:1;height:18px;border-radius:6px;background:#f1f4fa;position:relative}
+#stage .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:6px}
+#stage .card{border:1px solid #e2e7f0;border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:13px}
+#legend{margin:0 22px;padding:10px 14px;background:#fff;border:1px solid #e2e7f0;border-radius:12px;font-size:12px;color:#41506a}
+pre#out{margin:12px 22px;background:#101a26;color:#dceaf7;border-radius:12px;padding:12px;font-size:12px;overflow:auto}
+#log{margin:0 22px 10px;color:#5c6a7c;font-size:12px}
+details{padding:0 22px 30px;color:#5c6a7c;font-size:13px}
+textarea{width:100%;height:120px;font-family:ui-monospace,monospace;font-size:12px;border:1px solid #d7dde8;border-radius:10px;padding:10px}
+#reload{font:inherit;margin-top:8px;padding:7px 14px;border-radius:8px;border:1px solid #d7dde8;background:#fff;cursor:pointer}
+</style></head>
+<body>
+<header><h1>priobump · 仪表盘</h1><p class="hint">点按钮改处理预算、减事件，右边看锁在谁手里、当前优先级多少、谁在等、提升过几次。</p></header>
+<div class="grid">
+  <section id="controls"></section>
+  <section id="stage"></section>
+</div>
+<div id="legend"></div>
+<pre id="out">还没跑</pre>
+<div id="log"></div>
+
+<details>
+  <summary>场景数据（可以直接改，改完点重新载入）</summary>
+  <textarea id="input">{
+  "budget": 2,
+  "bad_task_code": "E_BAD_TASK",
+  "bad_prio_code": "E_BAD_PRIO",
+  "held_code": "E_HELD",
+  "not_held_code": "E_NOT_HELD",
+  "dup_wait_code": "E_DUP_WAIT",
+  "not_owner_code": "E_NOT_OWNER",
+  "event_error_code": "E_BAD_EVENT",
+  "state": { "holder": [], "waiting": [], "bumps": [], "ledger": [], "applied": [] },
+  "events": [
+    { "id": 1, "kind": "lock", "task": "a", "prio": 2 },
+    { "id": 2, "kind": "want", "task": "b", "prio": 5 },
+    { "id": 3, "kind": "unlock", "task": "a" },
+    { "id": 4, "kind": "lock", "task": "b", "prio": 1 },
+    { "id": 5, "kind": "want", "task": "c", "prio": 3 }
+  ]
+}</textarea>
+  <button id="reload">重新载入场景</button>
+</details>
+<script type="module">
+import { mount } from "./ui.js";
+
+const parts = {
+  controls: document.getElementById("controls"),
+  stage: document.getElementById("stage"),
+  out: document.getElementById("out"),
+  legend: document.getElementById("legend"),
+  log: document.getElementById("log")
+};
+
+function start(spec) {
+  try {
+    mount(spec, parts);
+  } catch (error) {
+    parts.out.textContent = String(error && error.stack ? error.stack : error);
+  }
+}
+
+document.getElementById("reload").addEventListener("click", function () {
+  try {
+    start(JSON.parse(document.getElementById("input").value));
+  } catch (error) {
+    parts.out.textContent = String(error);
+  }
+});
+
+start(JSON.parse(document.getElementById("input").value));
+</script>
+</body></html>
