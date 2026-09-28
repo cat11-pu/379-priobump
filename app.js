@@ -30,7 +30,7 @@ export function render(spec) {
            mid_differs: fingerprint(r2.state) !== fingerprint(first.state),
            closed_equal: fingerprint(closedTwo.state) === fingerprint(closed.state),
            replay_new: replay.served, judged: first.judged, judged_bound: first.judged_bound,
-           full_diff: fingerprint(closed.state) === fingerprint(fullClosed.state) ? 0 : 1,
            count_events: events.length,
-           tail: lockOf([], "a", 1).length + raiseOf([["a", 1, 1]], 3)[1] };
+           tail: lockOf([], "a", 1).length + raiseOf([["a", 1, 1]], 3)[1],
+           full_diff: fingerprint(closed.state) === fingerprint(fullClosed.state) ? 0 : 1 };
 }
